@@ -217,7 +217,7 @@ enum Mode
   Mode_aFeed,
   Mode_Cone_L,
   Mode_Cone_R,
-  Mode_Reserve,
+  Mode_GCode,
   Mode_Sphere,
   Mode_Divider
 };

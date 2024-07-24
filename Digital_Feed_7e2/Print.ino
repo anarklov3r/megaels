@@ -55,10 +55,10 @@ void Print()
    }
 
 
-   else if (Mode == Mode_Reserve)  //////////////////////////////////////////////////////////////
+   else if (Mode == Mode_GCode)  //////////////////////////////////////////////////////////////
    {
-      snprintf(LCD_Row_1, 17, "Reserve         ");
-      snprintf(LCD_Row_2, 17, "Reserve         ");
+      snprintf(LCD_Row_1, 17, "GCode Mode      ");
+      snprintf(LCD_Row_2, 17, "Waiting for data.");
    }
    
 

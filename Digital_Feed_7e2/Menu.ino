@@ -931,7 +931,7 @@ void Switch_Cone_R()
    Print();
 }
 
-void Switch_Reserve()
+void Switch_GCode()
 {
    Hand_Count = 0;
    Hand_Count_New = 0;
@@ -941,7 +941,7 @@ void Switch_Reserve()
    Null_Z_Pos = Motor_Z_Pos;
    Null_X_Pos = Motor_X_Pos;
    
-   Mode = Mode_Reserve;
+   Mode = Mode_GCode;
    Print();
 }
 
