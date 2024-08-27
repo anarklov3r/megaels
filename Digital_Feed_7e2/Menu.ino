@@ -22,7 +22,7 @@ void Menu()
          else if (Mode_New == B11011111) {Switch_aFeed();}
          else if (Mode_New == B11101111) {Switch_Cone_L();}
          else if (Mode_New == B11110111) {Switch_Cone_R();}
-         else if (Mode_New == B11111011) {Switch_Reserve();}
+         else if (Mode_New == B11111011) {Switch_GCode();}
          else if (Mode_New == B11111101) {Switch_Sphere();}
          else if (Mode_New == B11111110) {Switch_Divider();}
          Mode_Old = Mode_New;
