@@ -87,5 +87,9 @@ void Read_ADC_Feed()
             break;
          }
       } 
+   }
+   else if (Mode == Mode_GCode)
+   {
+    
    } 
 }

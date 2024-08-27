@@ -10,7 +10,7 @@
 #define McSTEP_Z             4        // Z driver microsteps (400 steps = 2, 800 steps = 4, etc)
 #define Z_INVERT                      // Comment this line if Z motor is connected directly to the lead screw, uncomment if via belt
 // #define Z_ENA_INVERT                  // Comment/uncomment this line if Z motor is getting disabled when it should be enabled
-#define MOTOR_X_STEP_PER_REV 200      // X motor steps (cross-slide) - almost always 200, microsteps configured below
+#define MOTOR_X_STEP_PER_REV 600      // X motor steps (cross-slide) - almost always 200, microsteps configured below
 #define SCREW_X              42       // X (cross-slide) pitch, in hundreds of a mm
 #define REBOUND_X            200      // X backlash in microsteps
 #define REBOUND_Z            200      // Z backlash in microsteps
@@ -20,7 +20,7 @@
 #define FEED_ACCEL           3        // The rigidity of acceleration at feed rates, a higher value means shorter acceleration.
 //
 #define MIN_FEED             2        // Min feed in 0.01mm. 2 = 0.02mm
-#define MAX_FEED             20       // Max feed in 0.01mm. 20 = 0.20mm
+#define MAX_FEED             7       // Max feed in 0.01mm. 20 = 0.20mm
 #define MIN_aFEED            20       // Min feed in mm/min. 20 = 20mm/min
 #define MAX_aFEED            400      // Max feed in mm/min. 400 = 400mm/min
 
@@ -38,6 +38,19 @@
 #define HC_MAX_SPEED_10      23       // maximum RGI speed, 250000/(23+1)/800*60/2 = 391rpm
 #define HC_X_DIR             0        // 1-CW, 0-CCW
 #define HC_Z_DIR             0        // 1-CW, 0-CCW
+
+
+//GCode Stuff
+char  serialBuffer[64];  // where we store the message until we get a newline
+int   sofar;            // how much is in the serialBuffer
+float px, pz;      // location
+
+// speeds
+float fr =     0;  // human version
+long  step_delay;  // machine version
+
+// settings
+char mode_abs=1;   // absolute mode?
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -694,6 +707,18 @@ void setup()
 
   Motor_Z_RemovePulse();
   Motor_X_RemovePulse();
+
+//initalise Serial for GCode
+
+  Serial.begin(57600);  // open coms
+
+  setup_controller();  
+  //position(0,0);  // set staring position
+  //extern feedrate((FEED + MIN_FEED)/2);  // set default speed
+
+  help();  // say hello
+  ready();
+
 }
 
 
@@ -707,7 +732,24 @@ void loop()
   
   if (Mode == Mode_Divider) Print(); // for now for the test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //  Print();                         // just for test !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+  
+  if (Mode == Mode_GCode) {
+    while(Serial.available() > 0) {  // if something is available
+      char cRead=Serial.read();  // get it
+      Serial.print(cRead);  // repeat it back so I know you got the message
+      if(sofar<64-1) serialBuffer[sofar++]=cRead;  // store it
+      if((cRead=='\n') || (cRead == '\r')) {
+        // entire message received
+        serialBuffer[sofar]=0;  // end the buffer so string functions work right
+        Serial.print(F("\r\n"));  // echo a return character for humans
+        lcd.setCursor(0, 1);
+        lcd.print(serialBuffer);
+        _delay_ms(500);
+        processCommand();  // do something with the command
+        ready();
+      }
+    }
+  }
 }
 
 
